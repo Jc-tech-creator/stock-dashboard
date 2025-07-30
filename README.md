@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Stock Dashboard
 
 A comprehensive React-based stock dashboard application that provides real-time market data, portfolio management, and trading capabilities.
@@ -27,7 +28,7 @@ A comprehensive React-based stock dashboard application that provides real-time 
 
 ## API Endpoints
 
-The application expects a backend server running on `http://localhost:3001` with the following endpoints:
+The application expects a backend server running on `http://localhost:3000` with the following endpoints:
 
 - `GET /api/search?q={query}` - Search for stocks
 - `GET /api/top/gainer` - Get top gaining stocks
@@ -49,7 +50,7 @@ npm install
 2. Set up environment variables:
 Create a `.env` file in the root directory:
 ```
-REACT_APP_API_BASE=http://localhost:3001
+REACT_APP_API_BASE=http://localhost:3000
 ```
 
 3. Start the development server:
@@ -70,16 +71,26 @@ npm start
 ```
 src/
 ├── components/
-│   ├── SearchBar.js         # Stock search functionality
-│   ├── StockList.js         # Display lists of stocks
-│   ├── Portfolio.js         # Portfolio container with tabs
-│   ├── Holdings.js          # Holdings view component
-│   ├── Treemap.js          # Treemap visualization
-│   ├── Charts.js           # Portfolio performance charts
-│   └── StockModal.js       # Trading modal component
-├── App.js                  # Main application component
-├── App.css                 # Main application styles
-└── index.js               # Application entry point
+│   ├── Search/
+│   │   ├── SearchBar.js         # Stock search functionality
+│   │   └── SearchBar.css
+│   ├── Stocks/
+│   │   ├── StockList.js         # Display lists of stocks
+│   │   └── StockList.css
+│   ├── Portfolio/
+│   │   ├── Portfolio.js         # Portfolio container with tabs
+│   │   ├── Holdings.js          # Holdings view component
+│   │   ├── Treemap.js          # Treemap visualization
+│   │   └── respective CSS files
+│   ├── Charts/
+│   │   ├── Charts.js           # Portfolio performance charts
+│   │   └── Charts.css
+│   └── Modals/
+│       ├── StockModal.js       # Trading modal component
+│       └── StockModal.css
+├── App.js                      # Main application component
+├── App.css                     # Main application styles
+└── index.js                   # Application entry point
 ```
 
 ## Usage
@@ -106,27 +117,6 @@ To run tests:
 ```bash
 npm test
 ```
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+# stock-dashboard
+>>>>>>> 4992efc38751aacd1eaa1698855700905b8d2e88
