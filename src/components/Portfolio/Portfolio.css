@@ -1,0 +1,42 @@
+.portfolio-container {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+  overflow: hidden;
+}
+
+.portfolio-tabs {
+  display: flex;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 20px;
+  background-color: #f8f9fa;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.tab-button:hover {
+  background-color: #e9ecef;
+}
+
+.tab-button.active {
+  background-color: white;
+  color: #007bff;
+  border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+  padding: 20px;
+}
+
+.portfolio-loading {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}

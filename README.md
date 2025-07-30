@@ -1,49 +1,111 @@
-# Getting Started with Create React App
+# Stock Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive React-based stock dashboard application that provides real-time market data, portfolio management, and trading capabilities.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### Market Data
+- **Search Bar**: Search for stocks with real-time suggestions
+- **Top Gainers**: Display top performing stocks
+- **Top Losers**: Display worst performing stocks  
+- **Trending Stocks**: Show currently trending stocks
 
-### `npm start`
+### Portfolio Management
+- **Holdings View**: View your current stock positions with returns
+- **Treemap Visualization**: Visual representation of portfolio performance
+- **Portfolio Analytics**: Track total returns and performance metrics
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Analytics & Charts
+- **Net Wealth Chart**: Track portfolio value over time
+- **Return Rate Chart**: Monitor return percentages
+- **Historical Price Charts**: Individual stock price history
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Trading
+- **Buy/Sell Modal**: Execute trades directly from the dashboard
+- **Stock Details**: View comprehensive stock information
+- **Transaction History**: Track your trading activity
 
-### `npm test`
+## API Endpoints
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The application expects a backend server running on `http://localhost:3001` with the following endpoints:
 
-### `npm run build`
+- `GET /api/search?q={query}` - Search for stocks
+- `GET /api/top/gainer` - Get top gaining stocks
+- `GET /api/top/loser` - Get top losing stocks
+- `GET /api/top/trending` - Get trending stocks
+- `GET /api/portfolio` - Get user portfolio data
+- `GET /api/daily_snapshot` - Get historical portfolio snapshots
+- `GET /api/history/{ticker}` - Get historical price data for a stock
+- `POST /api/buy` - Execute buy orders
+- `POST /api/sell` - Execute sell orders
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Install dependencies:
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Set up environment variables:
+Create a `.env` file in the root directory:
+```
+REACT_APP_API_BASE=http://localhost:3001
+```
 
-### `npm run eject`
+3. Start the development server:
+```bash
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Dependencies
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- React 19.1.1
+- Recharts (for charts)
+- D3 (for treemap visualization)
+- Axios (for API calls)
+- React Modal (for trading modal)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/
+├── components/
+│   ├── SearchBar.js         # Stock search functionality
+│   ├── StockList.js         # Display lists of stocks
+│   ├── Portfolio.js         # Portfolio container with tabs
+│   ├── Holdings.js          # Holdings view component
+│   ├── Treemap.js          # Treemap visualization
+│   ├── Charts.js           # Portfolio performance charts
+│   └── StockModal.js       # Trading modal component
+├── App.js                  # Main application component
+├── App.css                 # Main application styles
+└── index.js               # Application entry point
+```
 
-## Learn More
+## Usage
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **Search Stocks**: Use the search bar in the upper left to find stocks
+2. **View Market Data**: Browse top gainers, losers, and trending stocks
+3. **Manage Portfolio**: Switch between Holdings and Treemap views
+4. **Execute Trades**: Click on any stock to open the trading modal
+5. **Monitor Performance**: View charts showing your portfolio's performance over time
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Development
+
+To start the development server:
+```bash
+npm start
+```
+
+To build for production:
+```bash
+npm run build
+```
+
+To run tests:
+```bash
+npm test
+```
 
 ### Code Splitting
 

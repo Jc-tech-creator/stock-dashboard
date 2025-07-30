@@ -1,0 +1,133 @@
+.holdings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.portfolio-summary {
+  display: flex;
+  gap: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.summary-value.positive {
+  color: #28a745;
+}
+
+.summary-value.negative {
+  color: #dc3545;
+}
+
+.holdings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.holding-item {
+  padding: 15px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.holding-item:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.holding-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.holding-symbol {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.holding-current-price {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.holding-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.holding-performance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.holding-return,
+.holding-return-rate {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.holding-return.positive,
+.holding-return-rate.positive {
+  color: #28a745;
+}
+
+.holding-return.negative,
+.holding-return-rate.negative {
+  color: #dc3545;
+}
+
+.cash-balance {
+  padding: 15px;
+  background-color: #e7f3ff;
+  border-radius: 8px;
+  border: 1px solid #007bff;
+}
+
+.cash-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cash-label {
+  font-weight: 500;
+  color: #007bff;
+}
+
+.cash-value {
+  font-weight: bold;
+  font-size: 16px;
+  color: #007bff;
+}

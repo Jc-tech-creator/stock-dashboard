@@ -1,0 +1,75 @@
+.stock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.stock-item {
+  padding: 12px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.stock-item:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.stock-symbol {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.stock-price {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.stock-name {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stock-changes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.change {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.change.positive {
+  color: #28a745;
+}
+
+.change.negative {
+  color: #dc3545;
+}
+
+.stock-volume {
+  font-size: 12px;
+  color: #666;
+}

@@ -1,0 +1,220 @@
+.stock-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stock-modal {
+  background: white;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  outline: none;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.stock-info h2 {
+  margin: 0 0 4px 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.stock-name {
+  margin: 0 0 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.price-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.current-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.change {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.change.positive {
+  color: #28a745;
+}
+
+.change.negative {
+  color: #dc3545;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.modal-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart-section h3,
+.transaction-section h3,
+.stock-details h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #666;
+}
+
+.transaction-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.transaction-type {
+  display: flex;
+  gap: 20px;
+}
+
+.transaction-type label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.quantity-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-input label {
+  font-weight: 500;
+}
+
+.quantity-input input {
+  padding: 8px 12px;
+  border: 1px solid #e1e5e9;
+  border-radius: 4px;
+  width: 100px;
+}
+
+.transaction-summary {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.transaction-summary p {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.transaction-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.transaction-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.transaction-button.buy {
+  background-color: #28a745;
+  color: white;
+}
+
+.transaction-button.buy:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.transaction-button.sell {
+  background-color: #dc3545;
+  color: white;
+}
+
+.transaction-button.sell:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.stock-details {
+  border-top: 1px solid #e1e5e9;
+  padding-top: 20px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.detail-item .label {
+  color: #666;
+  font-size: 14px;
+}
+
+.detail-item .value {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
