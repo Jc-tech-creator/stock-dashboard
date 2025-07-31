@@ -110,7 +110,7 @@ const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
             <div className="holding-header">
               <div className="holding-symbol">{holding.ticker}</div>
               <div className="holding-current-price">
-                {formatCurrency(parseFloat(holding.current_price) || 0)}
+                Price: {formatCurrency(parseFloat(holding.current_price) || 0)}
               </div>
             </div>
             
@@ -125,7 +125,7 @@ const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
 
             <div className="holding-performance">
               <div className={`holding-return ${(parseFloat(holding.stock_return) || 0) >= 0 ? 'positive' : 'negative'}`}>
-                {formatCurrency(parseFloat(holding.stock_return) || 0)}
+                {(parseFloat(holding.stock_return) || 0) >= 0 ? 'Return' : 'Loss'}: {formatCurrency(parseFloat(holding.stock_return) || 0)}
               </div>
               <div className={`holding-return-rate ${(parseFloat(holding.stock_return_rate) || 0) >= 0 ? 'positive' : 'negative'}`}>
                 ({formatPercent(parseFloat(holding.stock_return_rate) || 0)})
