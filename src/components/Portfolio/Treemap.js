@@ -117,9 +117,9 @@ const Treemap = ({ portfolioData }) => {
   return (
     <div className="treemap-container">
       <h4>Portfolio Treemap</h4>
-      <p className="treemap-description">
+      {/* <p className="treemap-description">
         矩形大小表示收益绝对值，颜色表示盈亏及金额大小
-      </p>
+      </p> */}
       <svg ref={svgRef} />
       <div className="treemap-legend">
         <div className="legend-item">
