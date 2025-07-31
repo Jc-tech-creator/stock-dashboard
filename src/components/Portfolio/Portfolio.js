@@ -3,7 +3,7 @@ import Holdings from './Holdings';
 import Treemap from './Treemap';
 import './Portfolio.css';
 
-const Portfolio = ({ portfolioData, onStockClick }) => {
+const Portfolio = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
   const [activeTab, setActiveTab] = useState('holdings');
 
   if (!portfolioData) {
@@ -32,6 +32,7 @@ const Portfolio = ({ portfolioData, onStockClick }) => {
           <Holdings 
             portfolioData={portfolioData} 
             onStockClick={onStockClick}
+            onRefreshNeeded={onRefreshNeeded}
           />
         ) : (
           <Treemap portfolioData={portfolioData} />

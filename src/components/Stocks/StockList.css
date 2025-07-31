@@ -6,6 +6,13 @@
   overflow-y: auto;
 }
 
+.stock-list-empty {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
 .stock-item {
   padding: 12px;
   border: 1px solid #e1e5e9;

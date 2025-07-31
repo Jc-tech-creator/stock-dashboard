@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Holdings.css';
 
-const Holdings = ({ portfolioData, onStockClick }) => {
+const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
+  const [cashBalance, setCashBalance] = useState(null);
+  
+  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000';
+
+  useEffect(() => {
+    fetchCashBalance();
+  }, []);
+
+  // Refetch cash balance when portfolio data changes (after transactions)
+  useEffect(() => {
+    if (onRefreshNeeded) {
+      fetchCashBalance();
+    }
+  }, [portfolioData, onRefreshNeeded]);
+
+  const fetchCashBalance = async () => {
+    try {
+      const response = await axios.get(`${API_BASE}/api/cash`);
+      setCashBalance(response.data.cash_balance);
+    } catch (error) {
+      console.error('Error fetching cash balance:', error);
+    }
+  };
   const formatCurrency = (value) => {
+    if (!value || typeof value !== 'number' || isNaN(value)) {
+      return '$0.00';
+    }
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -10,32 +37,48 @@ const Holdings = ({ portfolioData, onStockClick }) => {
   };
 
   const formatPercent = (value) => {
+    if (typeof value !== 'number' || isNaN(value)) {
+      return '±0.00%';
+    }
     const sign = value >= 0 ? '+' : '';
     return `${sign}${parseFloat(value).toFixed(2)}%`;
   };
 
   const handleStockClick = (holding) => {
     const stock = {
-      symbol: holding.ticker,
-      name: holding.ticker, // You might want to fetch the full name
-      price: parseFloat(holding.current_price),
+      symbol: holding.ticker || 'N/A',
+      name: holding.ticker || 'Unknown', // You might want to fetch the full name
+      price: parseFloat(holding.current_price) || 0,
       change: 0, // Calculate if needed
       changePercent: 0 // Calculate if needed
     };
     onStockClick(stock);
   };
 
+  // Safety check for portfolio data
+  if (!portfolioData || !portfolioData.portfolio || !Array.isArray(portfolioData.portfolio)) {
+    return <div className="holdings-loading">Loading holdings...</div>;
+  }
+
+  // Debug logging to check data types
+  console.log('Portfolio data:', portfolioData);
+  if (portfolioData.portfolio.length > 0) {
+    console.log('First holding:', portfolioData.portfolio[0]);
+    console.log('Current price type:', typeof portfolioData.portfolio[0].current_price);
+    console.log('Stock return type:', typeof portfolioData.portfolio[0].stock_return);
+  }
+
   return (
     <div className="holdings-container">
       <div className="portfolio-summary">
         <div className="summary-item">
           <span className="summary-label">Total Value:</span>
-          <span className="summary-value">{formatCurrency(portfolioData.total_stock_value)}</span>
+          <span className="summary-value">{formatCurrency(parseFloat(portfolioData.total_stock_value) || 0)}</span>
         </div>
         <div className="summary-item">
           <span className="summary-label">Total Return:</span>
-          <span className={`summary-value ${portfolioData.total_return >= 0 ? 'positive' : 'negative'}`}>
-            {formatCurrency(portfolioData.total_return)}
+          <span className={`summary-value ${(parseFloat(portfolioData.total_return) || 0) >= 0 ? 'positive' : 'negative'}`}>
+            {formatCurrency(parseFloat(portfolioData.total_return) || 0)}
           </span>
         </div>
       </div>
@@ -50,7 +93,7 @@ const Holdings = ({ portfolioData, onStockClick }) => {
             <div className="holding-header">
               <div className="holding-symbol">{holding.ticker}</div>
               <div className="holding-current-price">
-                {formatCurrency(holding.current_price)}
+                {formatCurrency(parseFloat(holding.current_price) || 0)}
               </div>
             </div>
             
@@ -59,16 +102,16 @@ const Holdings = ({ portfolioData, onStockClick }) => {
                 Quantity: {holding.quantity}
               </div>
               <div className="holding-avg-price">
-                Avg Cost: {formatCurrency(holding.avg_buy_price)}
+                Avg Cost: {formatCurrency(parseFloat(holding.avg_buy_price) || 0)}
               </div>
             </div>
 
             <div className="holding-performance">
-              <div className={`holding-return ${holding.stock_return >= 0 ? 'positive' : 'negative'}`}>
-                {formatCurrency(holding.stock_return)}
+              <div className={`holding-return ${(parseFloat(holding.stock_return) || 0) >= 0 ? 'positive' : 'negative'}`}>
+                {formatCurrency(parseFloat(holding.stock_return) || 0)}
               </div>
-              <div className={`holding-return-rate ${holding.stock_return_rate >= 0 ? 'positive' : 'negative'}`}>
-                ({formatPercent(holding.stock_return_rate)})
+              <div className={`holding-return-rate ${(parseFloat(holding.stock_return_rate) || 0) >= 0 ? 'positive' : 'negative'}`}>
+                ({formatPercent(parseFloat(holding.stock_return_rate) || 0)})
               </div>
             </div>
           </div>
@@ -79,7 +122,7 @@ const Holdings = ({ portfolioData, onStockClick }) => {
         <div className="cash-item">
           <span className="cash-label">Cash Balance:</span>
           <span className="cash-value">
-            {formatCurrency(500000 - portfolioData.total_stock_value)} {/* Assuming initial cash */}
+            {cashBalance !== null ? formatCurrency(cashBalance) : 'Loading...'}
           </span>
         </div>
       </div>

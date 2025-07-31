@@ -47,8 +47,13 @@ function App() {
 
   const handleSearch = async (query) => {
     try {
-      const response = await axios.get(`${API_BASE}/api/search?q=${query}`);
-      setSearchResults(response.data);
+      if (query.trim()) {
+        const response = await axios.get(`${API_BASE}/api/search?q=${query}`);
+        setSearchResults(response.data);
+      } else {
+        // Clear search results when query is empty
+        setSearchResults([]);
+      }
     } catch (error) {
       console.error('Error searching stocks:', error);
     }
@@ -104,6 +109,7 @@ function App() {
           <Portfolio 
             portfolioData={portfolioData} 
             onStockClick={handleStockClick}
+            onRefreshNeeded={refreshPortfolio}
           />
         </div>
       </div>

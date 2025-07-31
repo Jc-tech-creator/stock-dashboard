@@ -16,7 +16,16 @@ const SearchBar = ({ onSearch }) => {
     if (e.target.value.trim()) {
       // Debounced search could be implemented here
       onSearch(e.target.value.trim());
+    } else {
+      // Clear search results when input is empty
+      onSearch('');
     }
+  };
+
+  const handleClear = (e) => {
+    e.preventDefault();
+    setQuery('');
+    onSearch(''); // Clear search results
   };
 
   return (
@@ -29,9 +38,11 @@ const SearchBar = ({ onSearch }) => {
           placeholder="Search stocks..."
           className="search-input"
         />
-        <button type="submit" className="search-button">
-          🔍
-        </button>
+        {query && (
+          <button type="button" className="clear-button" onClick={handleClear}>
+            ✕
+          </button>
+        )}
       </form>
     </div>
   );

@@ -4,6 +4,13 @@
   gap: 20px;
 }
 
+.holdings-loading {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
 .portfolio-summary {
   display: flex;
   gap: 20px;
