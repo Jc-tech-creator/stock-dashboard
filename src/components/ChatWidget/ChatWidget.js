@@ -2,8 +2,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatWidget.css';
 
-const SESSION_ID = 'user';          // 如需多用户可换成 uuid
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';             // 若前端 /api 已代理到后端可留空
+const SESSION_ID = 'user';
+const API_BASE   = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 export default function ChatWidget() {
   const [open, setOpen]       = useState(false);
@@ -11,13 +11,12 @@ export default function ChatWidget() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesEndRef        = useRef(null);
+  const esRef                 = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
   useEffect(scrollToBottom, [history]);
 
-  /* ---------- 发送消息 ---------- */
   const send = () => {
     if (!msg.trim()) return;
     const userMsg = { role: 'user', content: msg };
@@ -26,7 +25,8 @@ export default function ChatWidget() {
     setLoading(true);
 
     const query = new URLSearchParams({ q: msg, sessionId: SESSION_ID });
-    const es = new EventSource(`${API_BASE}/api/chat?${query}`);
+    const es    = new EventSource(`${API_BASE}/api/chat?${query}`);
+    esRef.current = es;
 
     let assistant = { role: 'assistant', content: '' };
     setHistory((h) => [...h, assistant]);
@@ -45,9 +45,7 @@ export default function ChatWidget() {
           copy[copy.length - 1] = { ...assistant };
           return copy;
         });
-      } catch {
-        /* 忽略异常数据 */
-      }
+      } catch {}
     };
 
     es.onerror = () => {
@@ -56,38 +54,70 @@ export default function ChatWidget() {
     };
   };
 
-  return (
-    <div className={`chat-widget ${open ? 'open' : ''}`}>
-      {/* 悬浮按钮 */}
-      <button className="chat-toggle" onClick={() => setOpen(!open)}>
-        {open ? '×' : '💬'}
-      </button>
+  const stop = () => {
+    if (esRef.current) {
+      esRef.current.close();
+      esRef.current = null;
+    }
+    setLoading(false);
+  };
 
-      {/* 面板 */}
+  const clear = () => {
+    if (esRef.current) esRef.current.close();
+    setHistory([]);
+    setLoading(false);
+  };
+
+  return (
+    <div className="chat-widget">
+       {!open && (
+        <button className="chat-toggle" onClick={() => setOpen(true)}>
+          💬
+        </button>
+       )}
+
       {open && (
         <div className="chat-panel">
-          <div className="chat-header">投资管理助手</div>
+          <button className="close-btn" onClick={() => setOpen(false)}>
+            <span className="close-icon">×</span>
+          </button>
+
+          <div className="chat-header">
+            <span>AI Assistant</span>
+            <button className="clear-btn" onClick={clear}>
+              Clear
+            </button>
+          </div>
 
           <div className="chat-messages">
             {history.map((m, idx) => (
               <div key={idx} className={`chat-msg ${m.role}`}>
-                {m.content}
+                <span>{m.content}</span>
               </div>
             ))}
-            {loading && <div className="chat-msg loading">正在思考…</div>}
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="chat-input-bar">
-            <input
-              value={msg}
-              onChange={(e) => setMsg(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && send()}
-              placeholder="输入问题…"
-            />
-            <button onClick={send} disabled={loading}>
-              发送
-            </button>
+          <div className="chat-input-area">
+            {loading && (
+              <div className="thinking-bar">
+                <span>Generating…</span>
+                <button className="stop-btn" onClick={stop}>
+                  Stop
+                </button>
+              </div>
+            )}
+            <div className="chat-input-bar">
+              <input
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && send()}
+                placeholder="Ask a question…"
+              />
+              <button onClick={send} disabled={loading}>
+                Send
+              </button>
+            </div>
           </div>
         </div>
       )}
