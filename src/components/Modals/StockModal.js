@@ -13,12 +13,17 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   const [transactionType, setTransactionType] = useState('buy');
   const [quantity, setQuantity] = useState(1);
   const [transactionLoading, setTransactionLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [currentHolding, setCurrentHolding] = useState(0);
+  const [cashBalance, setCashBalance] = useState(0);
+  const [maxBuyQuantity, setMaxBuyQuantity] = useState(0);
 
   const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000';
 
   useEffect(() => {
     if (isOpen && stock) {
       fetchHistoricalData();
+      fetchPortfolioInfo();
     }
   }, [isOpen, stock]);
 
@@ -44,6 +49,29 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
     }
   };
 
+  const fetchPortfolioInfo = async () => {
+    if (!stock) return;
+    
+    try {
+      // Fetch current holdings for this stock
+      const portfolioResponse = await axios.get(`${API_BASE}/api/portfolio`);
+      const holdings = portfolioResponse.data.portfolio || [];
+      const currentStock = holdings.find(h => h.ticker === stock.symbol);
+      setCurrentHolding(currentStock ? currentStock.quantity : 0);
+
+      // Fetch cash balance
+      const cashResponse = await axios.get(`${API_BASE}/api/cash`);
+      const cash = cashResponse.data.cash_balance || 0;
+      setCashBalance(cash);
+
+      // Calculate max buy quantity based on cash and stock price
+      const maxBuy = Math.floor(cash / stock.price);
+      setMaxBuyQuantity(maxBuy);
+    } catch (error) {
+      console.error('Error fetching portfolio info:', error);
+    }
+  };
+
   const handleTransaction = async () => {
     if (!stock || quantity <= 0) return;
 
@@ -56,8 +84,14 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
         price: stock.price
       });
       
+      // Show success toast and delay modal close
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      
       onTransactionComplete();
-      onClose();
+      
+      // Keep modal open briefly so toast can be seen
+      setTimeout(() => onClose(), 1500);
     } catch (error) {
       console.error('Transaction error:', error);
       alert('Transaction failed. Please try again.');
@@ -86,12 +120,13 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   if (!stock) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      className="stock-modal"
-      overlayClassName="stock-modal-overlay"
-    >
+    <>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={onClose}
+        className="stock-modal"
+        overlayClassName="stock-modal-overlay"
+      >
       <div className="modal-header">
         <div className="stock-info">
           <h2>{stock.symbol}</h2>
@@ -136,6 +171,13 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
 
         <div className="transaction-section">
           <h3>Transaction</h3>
+          
+          {/* Current Holdings Info */}
+          <div className="current-holdings-info">
+            <p>Current Holdings: <strong>{currentHolding} shares</strong></p>
+            <p>Cash Balance: <strong>{formatCurrency(cashBalance)}</strong></p>
+          </div>
+
           <div className="transaction-controls">
             <div className="transaction-type">
               <label>
@@ -158,12 +200,22 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
               </label>
             </div>
 
+            {/* Max Quantity Info */}
+            <div className="max-quantity-info">
+              {transactionType === 'buy' ? (
+                <p>Max Buy: <strong>{maxBuyQuantity} shares</strong> (based on cash balance)</p>
+              ) : (
+                <p>Max Sell: <strong>{currentHolding} shares</strong> (current holdings)</p>
+              )}
+            </div>
+
             <div className="quantity-input">
               <label htmlFor="quantity">Quantity:</label>
               <input
                 id="quantity"
                 type="number"
                 min="1"
+                max={transactionType === 'buy' ? maxBuyQuantity : currentHolding}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
               />
@@ -176,7 +228,9 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
             <button
               className={`transaction-button ${transactionType}`}
               onClick={handleTransaction}
-              disabled={transactionLoading || quantity <= 0}
+              disabled={transactionLoading || quantity <= 0 || 
+                        (transactionType === 'buy' && quantity > maxBuyQuantity) ||
+                        (transactionType === 'sell' && quantity > currentHolding)}
             >
               {transactionLoading ? 'Processing...' : `${transactionType.toUpperCase()} ${quantity} shares`}
             </button>
@@ -208,6 +262,29 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
         )}
       </div>
     </Modal>
+
+    {/* Simple Toast Notification */}
+    {showToast && (
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        background: '#28a745',
+        color: 'white',
+        padding: '16px 24px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+        zIndex: 999999,
+        fontSize: '16px',
+        fontWeight: '500',
+        pointerEvents: 'none',
+        textAlign: 'center'
+      }}>
+        Transaction succeed!
+      </div>
+    )}
+    </>
   );
 };
 
