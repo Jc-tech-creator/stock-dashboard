@@ -15,3 +15,5 @@ export { default as StockModal } from './Modals';
 
 // Chat ChatWidget Component
 export { default as ChatWidget } from './ChatWidget';
+// Index Stock Components
+export { default as StockIndexReturn } from './indexOfStock';
