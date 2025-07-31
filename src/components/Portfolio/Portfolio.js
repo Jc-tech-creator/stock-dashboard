@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Holdings from './Holdings';
 import Treemap from './Treemap';
+import Transactions from './Transactions';
 import './Portfolio.css';
 
 const Portfolio = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
@@ -25,6 +26,12 @@ const Portfolio = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
         >
           Treemap
         </button>
+        <button
+          className={`tab-button ${activeTab === 'transactions' ? 'active' : ''}`}
+          onClick={() => setActiveTab('transactions')}
+        >
+          Transactions
+        </button>
       </div>
 
       <div className="tab-content">
@@ -34,8 +41,10 @@ const Portfolio = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
             onStockClick={onStockClick}
             onRefreshNeeded={onRefreshNeeded}
           />
-        ) : (
+        ) : activeTab === 'treemap' ? (
           <Treemap portfolioData={portfolioData} />
+        ) : (
+          <Transactions onRefreshNeeded={onRefreshNeeded} />
         )}
       </div>
     </div>
