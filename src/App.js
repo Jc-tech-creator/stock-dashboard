@@ -30,7 +30,7 @@ function App() {
   const fetchInitialData = async () => {
     try {
       // First update portfolio prices, then fetch all data
-      // await axios.post(`${API_BASE}/api/portfolio/update-prices`);
+      await axios.post(`${API_BASE}/api/portfolio/update-prices`);
       
       const [gainersRes, losersRes, trendingRes, portfolioRes, snapshotsRes] = await Promise.all([
         axios.get(`${API_BASE}/api/top/gainer`),
@@ -132,6 +132,68 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* 🔗 Footer */}
+      <footer className="app-footer">
+        <div className="footer-container">
+          <div className="footer-content">
+            <div className="footer-section">
+              <div className="footer-brand">
+                <div className="footer-logo">
+                  <div className="logo-icon">$</div>
+                  <span className="brand-name">WealthMaker</span>
+                </div>
+                <p className="footer-description">
+                  Your complete stock trading platform for smart investment decisions.
+                </p>
+              </div>
+            </div>
+            
+            <div className="footer-section">
+              <h4>Features</h4>
+              <ul className="footer-links">
+                <li>Real-time Stock Data</li>
+                <li>Portfolio Management</li>
+                <li>Trading Tools</li>
+                <li>Market Analysis</li>
+              </ul>
+            </div>
+            
+            <div className="footer-section">
+              <h4>Markets</h4>
+              <ul className="footer-links">
+                <li>Top Gainers</li>
+                <li>Top Losers</li>
+                <li>Trending Stocks</li>
+                <li>Market Indices</li>
+              </ul>
+            </div>
+            
+            <div className="footer-section">
+              <h4>Tools</h4>
+              <ul className="footer-links">
+                <li>K-Line Charts</li>
+                <li>Transaction History</li>
+                <li>Portfolio Treemap</li>
+                <li>Performance Analytics</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="footer-bottom">
+            <div className="footer-bottom-content">
+              <p>&copy; 2025 WealthMaker. All rights reserved.</p>
+              <div className="footer-stats">
+                <span>Real-time market data</span>
+                <span>•</span>
+                <span>Secure trading platform</span>
+                <span>•</span>
+                <span>Professional analytics</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       <StockModal
         isOpen={isModalOpen}

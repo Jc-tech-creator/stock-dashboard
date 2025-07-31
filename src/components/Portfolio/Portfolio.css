@@ -32,7 +32,9 @@
 }
 
 .tab-content {
+  max-height: 848px;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .portfolio-loading {

@@ -35,7 +35,7 @@ const Charts = ({ data }) => {
   };
 
   const netWealthValues = chartData.map(d => d.netWealth);
-  const minY = Math.min(...netWealthValues) * 0.95;
+  const minY = Math.min(...netWealthValues) * 0.99;
   const maxY = Math.max(...netWealthValues) * 1.05;
 
   return (
