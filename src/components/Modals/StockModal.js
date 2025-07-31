@@ -14,7 +14,7 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   const [quantity, setQuantity] = useState(1);
   const [transactionLoading, setTransactionLoading] = useState(false);
 
-  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000';
 
   useEffect(() => {
     if (isOpen && stock) {
@@ -49,7 +49,7 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
 
     setTransactionLoading(true);
     try {
-      const endpoint = transactionType === 'buy' ? '/api/buy' : '/api/sell';
+      const endpoint = transactionType === 'buy' ? '/api/portfolio/buy' : '/api/portfolio/sell';
       await axios.post(`${API_BASE}${endpoint}`, {
         ticker: stock.symbol,
         quantity: parseInt(quantity),

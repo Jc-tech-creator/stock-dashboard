@@ -35,6 +35,7 @@ The application expects a backend server running on `http://localhost:3000` with
 - `GET /api/top/loser` - Get top losing stocks
 - `GET /api/top/trending` - Get trending stocks
 - `GET /api/portfolio` - Get user portfolio data
+- `GET /api/cash` - Get current cash balance
 - `GET /api/daily_snapshot` - Get historical portfolio snapshots
 - `GET /api/history/{ticker}` - Get historical price data for a stock
 - `POST /api/buy` - Execute buy orders
