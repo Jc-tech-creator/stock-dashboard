@@ -157,6 +157,18 @@ body {
   box-sizing: border-box;
 }
 
+.section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+/* Ensure all right panel components have consistent width */
+.right-panel > * {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* Stock Index Return styles */
 .stock-index-return {
   width: 100%;

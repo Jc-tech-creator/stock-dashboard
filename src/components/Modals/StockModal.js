@@ -1,14 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Bar } from 'recharts';
 import axios from 'axios';
 import './StockModal.css';
 
 // Set the app element for accessibility
 Modal.setAppElement('#root');
 
+// Custom Candlestick component for K-line chart
+const CandlestickChart = ({ data, width, height }) => {
+  const Candlestick = (props) => {
+    const { payload, x, y, width, height } = props;
+    if (!payload) return null;
+
+    const { open, high, low, close } = payload;
+    const isGreen = close >= open;
+    const color = isGreen ? '#00C851' : '#FF4444';
+    const bodyHeight = Math.abs(close - open);
+    const bodyY = Math.min(open, close);
+    
+    // Scale factors for positioning
+    const priceRange = Math.max(...data.map(d => d.high)) - Math.min(...data.map(d => d.low));
+    const chartHeight = height || 300;
+    const scale = chartHeight / priceRange;
+    const minPrice = Math.min(...data.map(d => d.low));
+    
+    const getY = (price) => chartHeight - ((price - minPrice) * scale);
+    
+    return (
+      <g>
+        {/* High-Low line (wick) */}
+        <line
+          x1={x + width / 2}
+          y1={getY(high)}
+          x2={x + width / 2}
+          y2={getY(low)}
+          stroke={color}
+          strokeWidth={1}
+        />
+        {/* Open-Close body */}
+        <rect
+          x={x + width * 0.2}
+          y={getY(Math.max(open, close))}
+          width={width * 0.6}
+          height={Math.max(bodyHeight * scale, 1)}
+          fill={isGreen ? color : color}
+          fillOpacity={isGreen ? 0.8 : 1}
+          stroke={color}
+          strokeWidth={1}
+        />
+      </g>
+    );
+  };
+
+  return (
+    <ResponsiveContainer width={width} height={height}>
+      <ComposedChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+        <XAxis 
+          dataKey="date" 
+          tick={{ fontSize: 12 }}
+          stroke="#666"
+        />
+        <YAxis 
+          domain={['dataMin - 5', 'dataMax + 5']}
+          tickFormatter={(value) => `$${value.toFixed(2)}`}
+          tick={{ fontSize: 12 }}
+          stroke="#666"
+        />
+        <Tooltip 
+          content={({ active, payload, label }) => {
+            if (active && payload && payload.length) {
+              const data = payload[0].payload;
+              return (
+                <div className="candlestick-tooltip">
+                  <p className="tooltip-label">{label}</p>
+                  <p style={{ color: '#666' }}>Open: <span style={{ fontWeight: 'bold' }}>${data.open?.toFixed(2)}</span></p>
+                  <p style={{ color: '#666' }}>High: <span style={{ fontWeight: 'bold', color: '#00C851' }}>${data.high?.toFixed(2)}</span></p>
+                  <p style={{ color: '#666' }}>Low: <span style={{ fontWeight: 'bold', color: '#FF4444' }}>${data.low?.toFixed(2)}</span></p>
+                  <p style={{ color: '#666' }}>Close: <span style={{ fontWeight: 'bold' }}>${data.close?.toFixed(2)}</span></p>
+                  <p style={{ color: '#666' }}>Volume: <span style={{ fontWeight: 'bold' }}>{data.volume?.toLocaleString()}</span></p>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
+        <Bar 
+          dataKey="high" 
+          shape={Candlestick}
+          fill="transparent"
+        />
+      </ComposedChart>
+    </ResponsiveContainer>
+  );
+};
+
 const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   const [historicalData, setHistoricalData] = useState([]);
+  const [fullHistoricalData, setFullHistoricalData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [transactionType, setTransactionType] = useState('buy');
   const [quantity, setQuantity] = useState(1);
@@ -17,6 +107,7 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   const [currentHolding, setCurrentHolding] = useState(0);
   const [cashBalance, setCashBalance] = useState(0);
   const [maxBuyQuantity, setMaxBuyQuantity] = useState(0);
+  const [chartType, setChartType] = useState('candlestick'); // 'candlestick' or 'line'
 
   const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000';
 
@@ -33,15 +124,24 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE}/api/history/${stock.symbol}`);
-      const formattedData = response.data.map(item => ({
+      const allData = response.data.map(item => ({
         date: new Date(item.date).toLocaleDateString(),
-        price: item.close,
-        open: item.open,
-        high: item.high,
-        low: item.low,
-        volume: item.volume
+        price: item.close, // Keep for backward compatibility
+        open: parseFloat(item.open),
+        high: parseFloat(item.high),
+        low: parseFloat(item.low),
+        close: parseFloat(item.close),
+        volume: parseInt(item.volume),
+        originalDate: new Date(item.date) // Keep original date for sorting
       }));
-      setHistoricalData(formattedData);
+      
+      // Sort by date and get only the most recent 30 days for candlestick
+      const sortedData = allData.sort((a, b) => b.originalDate - a.originalDate);
+      const recent30Days = sortedData.slice(0, 30).reverse(); // Reverse to show chronological order
+      
+      // Store both full data and 30-day data
+      setFullHistoricalData(sortedData.reverse()); // Full data in chronological order
+      setHistoricalData(recent30Days); // 30-day data for candlestick
     } catch (error) {
       console.error('Error fetching historical data:', error);
     } finally {
@@ -145,27 +245,54 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
 
       <div className="modal-content">
         <div className="chart-section">
-          <h3>Price History</h3>
+          <div className="chart-header">
+            <h3>Price History</h3>
+            <div className="chart-toggle">
+              <button
+                className={`toggle-btn ${chartType === 'candlestick' ? 'active' : ''}`}
+                onClick={() => setChartType('candlestick')}
+              >
+                K-Line (30 Days)
+              </button>
+              <button
+                className={`toggle-btn ${chartType === 'line' ? 'active' : ''}`}
+                onClick={() => setChartType('line')}
+              >
+                Line Chart (Full Range)
+              </button>
+            </div>
+          </div>
+          
           {loading ? (
             <div className="loading">Loading chart...</div>
           ) : (
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={historicalData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis tickFormatter={formatCurrency} />
-                <Tooltip 
-                  formatter={(value, name) => [formatCurrency(value), name === 'price' ? 'Close Price' : name]}
+            <>
+              {chartType === 'candlestick' ? (
+                <CandlestickChart 
+                  data={historicalData}
+                  width="100%" 
+                  height={300}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="price" 
-                  stroke="#007bff" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={fullHistoricalData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis tickFormatter={formatCurrency} />
+                    <Tooltip 
+                      formatter={(value, name) => [formatCurrency(value), name === 'price' ? 'Close Price' : name]}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="price" 
+                      stroke="#007bff" 
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </>
           )}
         </div>
 
