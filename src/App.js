@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { 
-  SearchBar, 
-  StockList, 
-  Portfolio, 
-  Charts, 
-  StockModal 
+import {
+  SearchBar,
+  StockList,
+  Portfolio,
+  Charts,
+  StockModal,
+  StockIndexReturn
 } from './components';
 import axios from 'axios';
 
@@ -51,7 +52,6 @@ function App() {
         const response = await axios.get(`${API_BASE}/api/search?q=${query}`);
         setSearchResults(response.data);
       } else {
-        // Clear search results when query is empty
         setSearchResults([]);
       }
     } catch (error) {
@@ -75,18 +75,32 @@ function App() {
 
   return (
     <div className="App">
-      <div className="dashboard-container">
-        <div className="left-panel">
-          <SearchBar onSearch={handleSearch} />
-          
-          {searchResults.length > 0 && (
-            <div className="search-results">
-              <h3>Search Results</h3>
-              <StockList stocks={searchResults} onStockClick={handleStockClick} />
+      {/* 🎯 Header */}
+      <header className="app-header">
+        <div className="header-container">
+          <div className="header-brand">
+            <div className="logo-icon">$</div>
+            <div>
+              <h1>WealthMaker</h1>
+              <p className="header-subtitle">Your Complete Stock Trading Platform</p>
             </div>
-          )}
+          </div>
+        </div>
+      </header>
 
-          <div className="market-sections">
+      {/* 🧱 Main Content */}
+      <div className="main-content">
+        <div className="dashboard-container">
+          <div className="left-panel">
+            <SearchBar onSearch={handleSearch} />
+            
+            {searchResults.length > 0 && (
+              <div className="search-results">
+                <h3>Search Results</h3>
+                <StockList stocks={searchResults} onStockClick={handleStockClick} />
+              </div>
+            )}
+            
             <div className="section">
               <h3>Top Gainers</h3>
               <StockList stocks={topGainers} onStockClick={handleStockClick} />
@@ -96,21 +110,22 @@ function App() {
               <h3>Top Losers</h3>
               <StockList stocks={topLosers} onStockClick={handleStockClick} />
             </div>
-
+            
             <div className="section">
               <h3>Trending Stocks</h3>
               <StockList stocks={trendingStocks} onStockClick={handleStockClick} />
             </div>
           </div>
-        </div>
 
-        <div className="right-panel">
-          <Charts data={dailySnapshots} />
-          <Portfolio 
-            portfolioData={portfolioData} 
-            onStockClick={handleStockClick}
-            onRefreshNeeded={refreshPortfolio}
-          />
+          <div className="right-panel">
+            <StockIndexReturn />
+            <Charts data={dailySnapshots} />
+            <Portfolio
+              portfolioData={portfolioData}
+              onStockClick={handleStockClick}
+              onRefreshNeeded={refreshPortfolio}
+            />
+          </div>
         </div>
       </div>
 

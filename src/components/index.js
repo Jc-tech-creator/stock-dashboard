@@ -12,3 +12,6 @@ export { default as Charts } from './Charts';
 
 // Modal Components
 export { default as StockModal } from './Modals';
+
+// Index Stock Components
+export { default as StockIndexReturn } from './indexOfStock';

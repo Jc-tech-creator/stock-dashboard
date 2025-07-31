@@ -1,0 +1,53 @@
+/* StockIndexReturn.css */
+.stock-index-return {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e1e5e9;
+  height: 60px; /* 限制高度为两行文字的高度 */
+  overflow: hidden; /* 隐藏超出部分 */
+  position: relative; /* 为绝对定位的标题提供参考 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 将内容推到底部，给标题留空间 */
+}
+
+.stock-index-return h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+  color: #020202;
+  text-align: left;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.stock-index-return ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px; /* 为标题留出空间 */
+}
+
+.stock-index-return li {
+  font-size: 12px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.stock-index-return li strong {
+  margin-right: 8px;
+  color: #333;
+}
+
+.stock-index-return .positive {
+  color: #28a745; /* 与 Portfolio 组件一致的绿色 */
+}
+
+.stock-index-return .negative {
+  color: #dc3545; /* 与 Portfolio 组件一致的红色 */
+}
