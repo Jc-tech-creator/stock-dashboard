@@ -44,15 +44,32 @@ const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
     return `${sign}${parseFloat(value).toFixed(2)}%`;
   };
 
-  const handleStockClick = (holding) => {
-    const stock = {
-      symbol: holding.ticker || 'N/A',
-      name: holding.ticker || 'Unknown', // You might want to fetch the full name
-      price: parseFloat(holding.current_price) || 0,
-      change: 0, // Calculate if needed
-      changePercent: 0 // Calculate if needed
-    };
-    onStockClick(stock);
+  const handleStockClick = async (holding) => {
+    try {
+      // Fetch real-time quote data for change and changePercent
+      const response = await axios.get(`${API_BASE}/api/quote/${holding.ticker}`);
+      const quoteData = response.data;
+      
+      const stock = {
+        symbol: holding.ticker || 'N/A',
+        name: quoteData.name || holding.ticker || 'Unknown',
+        price: parseFloat(holding.current_price) || quoteData.price || 0,
+        change: quoteData.change || 0,
+        changePercent: quoteData.changePercent || 0
+      };
+      onStockClick(stock);
+    } catch (error) {
+      console.error('Error fetching quote data:', error);
+      // Fallback to original behavior if API call fails
+      const stock = {
+        symbol: holding.ticker || 'N/A',
+        name: holding.ticker || 'Unknown',
+        price: parseFloat(holding.current_price) || 0,
+        change: 0,
+        changePercent: 0
+      };
+      onStockClick(stock);
+    }
   };
 
   // Safety check for portfolio data

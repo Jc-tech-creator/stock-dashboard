@@ -13,6 +13,7 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   const [transactionType, setTransactionType] = useState('buy');
   const [quantity, setQuantity] = useState(1);
   const [transactionLoading, setTransactionLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000';
 
@@ -56,8 +57,14 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
         price: stock.price
       });
       
+      // Show success toast and delay modal close
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      
       onTransactionComplete();
-      onClose();
+      
+      // Keep modal open briefly so toast can be seen
+      setTimeout(() => onClose(), 1500);
     } catch (error) {
       console.error('Transaction error:', error);
       alert('Transaction failed. Please try again.');
@@ -86,12 +93,13 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
   if (!stock) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      className="stock-modal"
-      overlayClassName="stock-modal-overlay"
-    >
+    <>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={onClose}
+        className="stock-modal"
+        overlayClassName="stock-modal-overlay"
+      >
       <div className="modal-header">
         <div className="stock-info">
           <h2>{stock.symbol}</h2>
@@ -208,6 +216,29 @@ const StockModal = ({ isOpen, onClose, stock, onTransactionComplete }) => {
         )}
       </div>
     </Modal>
+
+    {/* Simple Toast Notification */}
+    {showToast && (
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        background: '#28a745',
+        color: 'white',
+        padding: '16px 24px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+        zIndex: 999999,
+        fontSize: '16px',
+        fontWeight: '500',
+        pointerEvents: 'none',
+        textAlign: 'center'
+      }}>
+        Transaction succeed!
+      </div>
+    )}
+    </>
   );
 };
 

@@ -27,6 +27,9 @@ function App() {
 
   const fetchInitialData = async () => {
     try {
+      // First update portfolio prices, then fetch all data
+      await axios.post(`${API_BASE}/api/portfolio/update-prices`);
+      
       const [gainersRes, losersRes, trendingRes, portfolioRes, snapshotsRes] = await Promise.all([
         axios.get(`${API_BASE}/api/top/gainer`),
         axios.get(`${API_BASE}/api/top/loser`),

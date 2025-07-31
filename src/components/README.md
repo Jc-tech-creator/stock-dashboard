@@ -36,7 +36,7 @@ Contains modal and popup components
 - `StockModal.css` - Modal component styles
 - `index.js` - Export file
 
-## 📄 index.js
+##  index.js
 Central export file for all components, allowing clean imports like:
 ```javascript
 import { SearchBar, StockList, Portfolio } from './components';
