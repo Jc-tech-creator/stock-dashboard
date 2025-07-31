@@ -5,7 +5,8 @@ import {
   StockList, 
   Portfolio, 
   Charts, 
-  StockModal 
+  StockModal,
+  ChatWidget  
 } from './components';
 import axios from 'axios';
 
@@ -114,6 +115,8 @@ function App() {
         stock={selectedStock}
         onTransactionComplete={refreshPortfolio}
       />
+      {/* NEW：右下角对话组件 */}
+      <ChatWidget />
     </div>
   );
 }

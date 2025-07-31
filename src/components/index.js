@@ -12,3 +12,6 @@ export { default as Charts } from './Charts';
 
 // Modal Components
 export { default as StockModal } from './Modals';
+
+// Chat ChatWidget Component
+export { default as ChatWidget } from './ChatWidget';
