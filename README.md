@@ -40,6 +40,7 @@ The application expects a backend server running on `http://localhost:3000` with
 - `GET /api/history/{ticker}` - Get historical price data for a stock
 - `POST /api/buy` - Execute buy orders
 - `POST /api/sell` - Execute sell orders
+- ...
 
 ## Installation
 
@@ -83,6 +84,7 @@ src/
 │   │   ├── Holdings.js          # Holdings view component
 │   │   ├── Treemap.js          # Treemap visualization
 │   │   └── respective CSS files
+|   |   |__ ... more related components
 │   ├── Charts/
 │   │   ├── Charts.js           # Portfolio performance charts
 │   │   └── Charts.css
@@ -120,4 +122,3 @@ npm test
 ```
 =======
 # stock-dashboard
->>>>>>> 4992efc38751aacd1eaa1698855700905b8d2e88
