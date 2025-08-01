@@ -128,7 +128,7 @@ const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
                 {(parseFloat(holding.stock_return) || 0) >= 0 ? 'Return' : 'Loss'}: {formatCurrency(parseFloat(holding.stock_return) || 0)}
               </div>
               <div className={`holding-return-rate ${(parseFloat(holding.stock_return_rate) || 0) >= 0 ? 'positive' : 'negative'}`}>
-                ({formatPercent(parseFloat(holding.stock_return_rate) || 0)})
+                Return Rate: {formatPercent(parseFloat(holding.stock_return_rate) || 0)}
               </div>
             </div>
           </div>

@@ -74,7 +74,7 @@ const Treemap = ({ portfolioData }) => {
 
       // 确定要显示的内容
       const lines =
-        d.value / totalValue < 0.2
+        d.value / totalValue < 0.1
           ? ['…']
           : [
               d.data.name,
