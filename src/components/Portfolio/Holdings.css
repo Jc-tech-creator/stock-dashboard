@@ -70,19 +70,48 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.holding-symbol {
-  font-weight: bold;
-  font-size: 16px;
-  color: #333;
+.holding-price-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
 }
 
 .holding-current-price {
   font-weight: bold;
   font-size: 16px;
   color: #333;
+}
+
+.holding-change {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.holding-change-percent {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.holding-change.positive,
+.holding-change-percent.positive {
+  color: #28a745;
+}
+
+.holding-change.negative,
+.holding-change-percent.negative {
+  color: #dc3545;
+}
+
+.holding-symbol {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
 }
 
 .holding-details {
@@ -137,4 +166,69 @@
   font-weight: bold;
   font-size: 16px;
   color: #007bff;
+}
+
+/* Real-time Market Data Styles */
+.holding-market-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #e1e5e9;
+}
+
+.market-change {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.market-change-percent {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.market-change.positive,
+.market-change-percent.positive {
+  color: #28a745;
+}
+
+.market-change.negative,
+.market-change-percent.negative {
+  color: #dc3545;
+}
+
+.holding-market-data .positive {
+  border-left-color: #28a745;
+  background-color: #f8fff9;
+}
+
+.holding-market-data .negative {
+  border-left-color: #dc3545;
+  background-color: #fff8f8;
+}
+
+.loading-indicator {
+  font-size: 10px;
+  margin-left: 6px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.holding-symbol {
+  display: flex;
+  align-items: center;
 }

@@ -4,17 +4,25 @@ import './Holdings.css';
 
 const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
   const [cashBalance, setCashBalance] = useState(null);
+  const [stockQuotes, setStockQuotes] = useState({});
+  const [quotesLoading, setQuotesLoading] = useState(false);
   
   const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000';
 
   useEffect(() => {
     fetchCashBalance();
+    if (portfolioData && portfolioData.portfolio) {
+      fetchAllStockQuotes();
+    }
   }, []);
 
-  // Refetch cash balance when portfolio data changes (after transactions)
+  // Refetch cash balance and quotes when portfolio data changes (after transactions)
   useEffect(() => {
     if (onRefreshNeeded) {
       fetchCashBalance();
+      if (portfolioData && portfolioData.portfolio) {
+        fetchAllStockQuotes();
+      }
     }
   }, [portfolioData, onRefreshNeeded]);
 
@@ -24,6 +32,35 @@ const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
       setCashBalance(response.data.cash_balance);
     } catch (error) {
       console.error('Error fetching cash balance:', error);
+    }
+  };
+
+  const fetchAllStockQuotes = async () => {
+    if (!portfolioData || !portfolioData.portfolio || portfolioData.portfolio.length === 0) {
+      return;
+    }
+
+    setQuotesLoading(true);
+    try {
+      const quotes = {};
+      
+      // Fetch quotes for all holdings in parallel
+      const quotePromises = portfolioData.portfolio.map(async (holding) => {
+        try {
+          const response = await axios.get(`${API_BASE}/api/quote/${holding.ticker}`);
+          quotes[holding.ticker] = response.data;
+        } catch (error) {
+          console.error(`Error fetching quote for ${holding.ticker}:`, error);
+          quotes[holding.ticker] = { change: 0, changePercent: 0 };
+        }
+      });
+
+      await Promise.all(quotePromises);
+      setStockQuotes(quotes);
+    } catch (error) {
+      console.error('Error fetching stock quotes:', error);
+    } finally {
+      setQuotesLoading(false);
     }
   };
   const formatCurrency = (value) => {
@@ -101,38 +138,59 @@ const Holdings = ({ portfolioData, onStockClick, onRefreshNeeded }) => {
       </div>
 
       <div className="holdings-list">
-        {portfolioData.portfolio.map((holding, index) => (
-          <div
-            key={`${holding.ticker}-${index}`}
-            className="holding-item"
-            onClick={() => handleStockClick(holding)}
-          >
-            <div className="holding-header">
-              <div className="holding-symbol">{holding.ticker}</div>
-              <div className="holding-current-price">
-                Price: {formatCurrency(parseFloat(holding.current_price) || 0)}
+        {portfolioData.portfolio.map((holding, index) => {
+          const quote = stockQuotes[holding.ticker] || {};
+          const change = parseFloat(quote.change) || 0;
+          const changePercent = parseFloat(quote.changePercent) || 0;
+          
+          return (
+            <div
+              key={`${holding.ticker}-${index}`}
+              className="holding-item"
+              onClick={() => handleStockClick(holding)}
+            >
+              <div className="holding-header">
+                <div className="holding-symbol">
+                  {holding.ticker}
+                  {quotesLoading && (
+                    <span className="loading-indicator">📊</span>
+                  )}
+                </div>
+                <div className="holding-price-section">
+                  <span className="holding-current-price">
+                    {formatCurrency(parseFloat(holding.current_price) || 0)}
+                  </span>
+                  <span className={`holding-change ${change >= 0 ? 'positive' : 'negative'}`}>
+                    {change >= 0 ? '+' : ''}{formatCurrency(change)}
+                  </span>
+                  <span className={`holding-change-percent ${changePercent >= 0 ? 'positive' : 'negative'}`}>
+                    ({changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%)
+                  </span>
+                </div>
               </div>
-            </div>
-            
-            <div className="holding-details">
-              <div className="holding-quantity">
-                Quantity: {holding.quantity}
+              
+              {/* Remove the separate market data section */}
+              
+              <div className="holding-details">
+                <div className="holding-quantity">
+                  Quantity: {holding.quantity}
+                </div>
+                <div className="holding-avg-price">
+                  Avg Cost: {formatCurrency(parseFloat(holding.avg_buy_price) || 0)}
+                </div>
               </div>
-              <div className="holding-avg-price">
-                Avg Cost: {formatCurrency(parseFloat(holding.avg_buy_price) || 0)}
-              </div>
-            </div>
 
-            <div className="holding-performance">
-              <div className={`holding-return ${(parseFloat(holding.stock_return) || 0) >= 0 ? 'positive' : 'negative'}`}>
-                {(parseFloat(holding.stock_return) || 0) >= 0 ? 'Return' : 'Loss'}: {formatCurrency(parseFloat(holding.stock_return) || 0)}
-              </div>
-              <div className={`holding-return-rate ${(parseFloat(holding.stock_return_rate) || 0) >= 0 ? 'positive' : 'negative'}`}>
-                Return Rate: {formatPercent(parseFloat(holding.stock_return_rate) || 0)}
+              <div className="holding-performance">
+                <div className={`holding-return ${(parseFloat(holding.stock_return) || 0) >= 0 ? 'positive' : 'negative'}`}>
+                  {(parseFloat(holding.stock_return) || 0) >= 0 ? 'Return' : 'Loss'}: {formatCurrency(parseFloat(holding.stock_return) || 0)}
+                </div>
+                <div className={`holding-return-rate ${(parseFloat(holding.stock_return_rate) || 0) >= 0 ? 'positive' : 'negative'}`}>
+                  Return Rate: {formatPercent(parseFloat(holding.stock_return_rate) || 0)}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="cash-balance">
